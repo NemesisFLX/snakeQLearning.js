@@ -34,7 +34,7 @@ function main(){
     if(MAP_SIZE > 3){
         init()
         console.log(SNAKE)
-        console.log(WORLD)
+        printWorld(WORLD)
         //do{
         //    step()
         //}while(!checkForEnd())
@@ -124,3 +124,8 @@ function checkForEnd(){
     return false
 }
 
+function printWorld(){
+    WORLD.forEach((column) => {
+        console.log(column.join("  "))
+    })
+}
