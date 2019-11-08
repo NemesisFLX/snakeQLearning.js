@@ -1,3 +1,4 @@
+const process = require('process')
 const MAP_SIZE = 20
 const VIEW_SIZE = 2 * MAP_SIZE - 1
 const WORLD_SIZE = 3 * MAP_SIZE - 2
@@ -19,6 +20,34 @@ WORLD.update = () => {
         WORLD[SNAKE.xBody[i]][SNAKE.yBody[i]] = state.snakeBody
     }
 }
+
+
+let stdin = process.stdin
+stdin.resume()
+stdin.setEncoding('utf8')
+stdin.setRawMode(true)
+stdin.on('data', function (key) {
+    if (key === '\u0003') {
+        process.exit()
+    }
+    switch (key) {
+        case 'w':
+            SNAKE.turn('N')
+            break
+        case 'a':
+            SNAKE.turn('W')
+            break
+        case 'd':
+            SNAKE.turn('E')
+            break
+        case 's':
+            SNAKE.turn('S')
+            break
+
+    }
+})
+
+
 
 class Snake {
     constructor(xHead, yHead, xBody, yBody) {
@@ -68,10 +97,10 @@ class Snake {
             this.newBodyPartY = this.yBody[this.yBody.length - 1]
             switch (this.headDirection) {
                 case "N":
-                    this.yHead = this.yHead + 1
+                    this.yHead = this.yHead - 1
                     break
                 case "S":
-                    this.yHead = this.yHead - 1
+                    this.yHead = this.yHead + 1
                     break
                 case "E":
                     this.xHead = this.xHead + 1
@@ -118,19 +147,24 @@ function main() {
         init()
         console.log(SNAKE)
         printWorld()
-        do {
-            SNAKE.turn(action())
-            //console.log(SNAKE)
-            step()
-            for (let x = 0; x <= 1; x++) {
-
-            }
-            printWorld()
-        } while (!SNAKE.dead)
-        console.log("Your score is: " + SNAKE.xBody.length + " | With: " + SNAKE.movesMade + " moves made.")
     } else {
         console.log("Map too small")
     }
+}
+
+let runInterval = setInterval(run, 500, 'run')
+
+function run () {
+    if (!SNAKE.dead) {
+        //SNAKE.turn(action())
+        step()
+        printWorld()
+    } else{
+        console.log("Your score is: " + SNAKE.xBody.length + " | With: " + SNAKE.movesMade + " moves made.")
+        stdin.destroy()
+        clearInterval(runInterval)
+    }
+    
 }
 
 function step() {
@@ -146,7 +180,7 @@ function step() {
     }
 }
 
-function action(){
+function action() {
     switch (getRandomInt(4)) {
         case 0:
             return "N"
